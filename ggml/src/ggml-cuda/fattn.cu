@@ -106,9 +106,9 @@ static void ggml_cuda_flash_attn_ext_mma_f16(ggml_backend_cuda_context & ctx, gg
             GGML_ASSERT(V->ne[0] == 128);
             ggml_cuda_flash_attn_ext_mma_f16_switch_ncols2<128, 128>(ctx, dst);
             break;
-	case 192:
-	    GGML_ASSERT(V->ne[0] == 128);
-	    ggml_cuda_flash_attn_ext_mma_f16_switch_ncols2<192, 128>(ctx, dst);
+        case 192:
+            GGML_ASSERT(V->ne[0] == 128);
+            ggml_cuda_flash_attn_ext_mma_f16_switch_ncols2<192, 128>(ctx, dst);
             break;
         case 256:
             GGML_ASSERT(V->ne[0] == 256);
@@ -238,9 +238,6 @@ static best_fattn_kernel ggml_cuda_get_best_fattn_kernel(const int device, const
 
     const int cc = ggml_cuda_info().devices[device].cc;
 
-	printf("Kne: %ld\n",K->ne[0]);
-	printf("Vne: %ld\n",V->ne[0]);
-
     switch (K->ne[0]) {
         case  40:
         case  64:
@@ -262,13 +259,12 @@ static best_fattn_kernel ggml_cuda_get_best_fattn_kernel(const int device, const
                 return BEST_FATTN_KERNEL_NONE;
             }
             break;
-	case 192:
+case 192:
 	    if (V->ne[0] != 128) {
 		    return BEST_FATTN_KERNEL_NONE;
 	    }
 	    break;
         default:
-		printf("default fattn fail\n");
             return BEST_FATTN_KERNEL_NONE;
     }
 
@@ -369,10 +365,8 @@ static best_fattn_kernel ggml_cuda_get_best_fattn_kernel(const int device, const
 
 void ggml_cuda_flash_attn_ext(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
     ggml_cuda_set_device(ctx.device);
-	printf("ggml_cuda_flash_attn_ext\n");
     switch (ggml_cuda_get_best_fattn_kernel(ggml_cuda_get_device(), dst)) {
         case BEST_FATTN_KERNEL_NONE:
-		printf("what you expect\n");
             GGML_ABORT("fatal error");
         case BEST_FATTN_KERNEL_TILE:
             ggml_cuda_flash_attn_ext_tile(ctx, dst);

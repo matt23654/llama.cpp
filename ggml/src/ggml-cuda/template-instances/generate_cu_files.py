@@ -62,7 +62,6 @@ for filename in glob("*.cu"):
     os.remove(filename)
 
 for head_size_kq in HEAD_SIZES_KQ:
-    #head_size_v = head_size_kq if head_size_kq != 576 else 512
     head_size_v = HEAD_SIZE_V_MAP.get(head_size_kq,head_size_kq)
 
     with open(f"fattn-tile-instance-dkq{head_size_kq}-dv{head_size_v}.cu", "w") as f:
@@ -91,7 +90,6 @@ for ncols in [8, 16, 32, 64]:
                 if head_size_kq == 576 and ncols2 != 16:
                     continue
                 head_size_v = HEAD_SIZE_V_MAP.get(head_size_kq,head_size_kq)
-                #head_size_v = head_size_kq if head_size_kq != 576 else 512
                 f.write(SOURCE_FATTN_MMA_CASE.format(ncols1=ncols1, ncols2=ncols2, head_size_kq=head_size_kq, head_size_v=head_size_v))
 
 for type in TYPES_MMQ:
